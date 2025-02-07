@@ -1,1 +1,3 @@
-$variable == 123
+.13 .2. $$$name 200.0 'hola' /*comentario con espacios /<> :=; */ := <= >= != == || && { } + - * / /* comentario
+con salto
+    de linea y tabulador */ /*
