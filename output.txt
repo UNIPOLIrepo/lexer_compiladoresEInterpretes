@@ -27,3 +27,4 @@ con salto
     de linea y tabulador */ = comentario
 / = aritmetico
 * = aritmetico
+end! = palabra clave
