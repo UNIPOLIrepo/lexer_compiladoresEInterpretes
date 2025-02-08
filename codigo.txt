@@ -1,5 +1,33 @@
-.13 .2. $$$name 200.0 'hola' /*comentario con espacios /<> :=; */ := <= >= != == || && { } + - * / /* comentario
-con salto
-    de linea y tabulador */ /*
-
+$nombre
+10
+1.5
+'esto es un string'
+/*esto es un comentrio*/
+/*esto es
+    una tabulacion
+        con salto de linea */
+:=
+>
+<
+>=
+<=
+!=
+==
++
+-
+*
+/
+||
+&&
+!
+{
+}
+[
+]
+(
+)
+;
+:
+.
+hola
 end!
