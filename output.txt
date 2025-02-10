@@ -6,28 +6,28 @@ $nombre = identificador
 /*esto es
     una tabulacion
         con salto de linea */ = comentario
-:= = relacional
-> = relacional
-< = relacional
->= = relacional
-<= = relacional
-!= = relacional
-== = relacional
-+ = aritmetico
-- = aritmetico
-* = aritmetico
-/ = aritmetico
-|| = logico
-&& = logico
-! = logico
-{ = delimitador
-} = delimitador
-[ = delimitador
-] = delimitador
-( = delimitador
-) = delimitador
-; = delimitador
-: = delimitador
+:= = asignacion
+> = relacional: mayor que
+< = relacional: menor que
+>= = relacional: mayor que o igual a
+<= = relacional: menor que o igual a
+!= = relacional: distinto a
+== = relacional: igual a
++ = aritmetico: suma
+- = aritmetico: resta
+* = aritmetico: multiplicacion
+/ = aritmetico: division
+|| = logico: or
+&& = logico: and
+! = logico: negacion
+{ = delimitador: llave izq
+} = delimitador: llave der
+[ = delimitador: corchete izq
+] = delimitador: corchete der
+( = delimitador: parentesis izq
+) = delimitador: parentesis der
+; = delimitador: punto y coma
+: = delimitador: dos puntos
 . = token no existe
 hola = token no reconocido
 end! = saveword
