@@ -1,0 +1,8 @@
+init $programa;
+var 
+  contador : 10;
+{
+  contador := 10.2;
+  
+}
+end
