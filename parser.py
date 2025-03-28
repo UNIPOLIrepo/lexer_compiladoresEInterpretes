@@ -1,5 +1,3 @@
-import re
-
 tabla = {
     'PROGRAM': {'¡init': 1},
     'BODY': {'var': 2, '{': 3},
@@ -33,162 +31,124 @@ tabla = {
 }
 
 producciones = {
-    1: ['¡init', 'identifier', ';', 'BODY', 'end!'],
-    2: ['DECLARE', 'MAIN'],
-    3: ['MAIN'],
-    4: ['var', 'IDENTIFIERS', ':', 'TYPES', ';'],
-    5: ['identifier', 'AUX1'],
-    6: [';', 'identifier', 'AUX1'],
-    7: ['Empty'],
-    8: ['DEFAULT'],
-    9: ['integer'],
-    10: ['decimal'],
-    11: ['char'],
-    12: ['string'],
-    13: ['bool'],
-    14: ['{', 'STATEMENT', '}'],
-    15: ['ASIGN'],
-    16: ['FOR STATEMENT'],
-    17: ['WHILE STATEMENT'],
-    18: ['IF STATEMENT'],
-    19: ['COUNTER'],
-    20: ['INPUT'],
-    21: ['OUTPUT'],
-    22: ['EXP', 'AUX2'],
-    23: ['REL', 'EXP'],
-    24: ['Empty'],
-    25: ['TERM', 'AUX3'],
-    26: ['+', 'TERM'],
-    27: ['-', 'TERM'],
-    28: ['||', 'TERM'],
-    29: ['Empty'],
-    30: ['=='],
-    31: ['<'],
-    32: ['>'],
-    33: ['<='],
-    34: ['>='],
-    35: ['!='],
-    36: ['identifier', ':=', 'EXPRESION'],
-    37: ['FACTOR', 'AUX4'],
-    38: ['*', 'FACTOR'],
-    39: ['/', 'FACTOR'],
-    40: ['&&', 'FACTOR'],
-    41: ['Empty'],
-    42: ['{', 'EXPRESION', '}'],
-    43: ['identifier'],
-    44: ['true'],
-    45: ['false'],
-    46: ['string'],
-    47: ['decimal'],
-    48: ['STATEMENT', ';', 'AUX5'],
-    49: ['STATEMENTS'],
-    50: ['Empty'],
-    51: ['for', 'COUNTER', 'do', '{', 'STATEMENTS', '}'],
-    52: ['id', ':=', 'EXPRESION', 'for', 'EXPRESION'],
-    53: ['while', 'EXPRESION', 'do', '{', 'STATEMENTS', '}'],
-    54: ['read', '(', 'AUX6'],
-    55: ['identifier', 'AUX7'],
-    56: [')'],
-    57: [',', 'AUX6'],
-    58: ['write', '(', 'AUX6'],
-    59: ['if', 'EXPRESION', 'then', '{', 'STATEMENTS', '}', 'AUX8'],
-    60: ['else', '{', 'STATEMENTS', '}', 'endif'],
-    61: ['endif'],
+    1: ['¡init', 'identifier', ';', 'BODY', 'end!'], # PROGRAM
+    2: ['DECLARE', 'MAIN'], # BODY
+    3: ['MAIN'], #BODY
+    4: ['var', 'IDENTIFIERS', ':', 'TYPES', ';'], # DECLARE
+    5: ['identifier', 'AUX1'], # IDENTIFIERS
+    6: [';', 'identifier', 'AUX1'], # AUX1
+    7: ['Empty'], # AUX1
+    8: ['DEFAULT'], # TYPES
+    9: ['integer'], #DEFAULT
+    10: ['decimal'], # DEFAULT
+    11: ['char'], # DEFAULT
+    12: ['string'], # DEFAULT
+    13: ['bool'], # DEFAULT
+    14: ['{', 'STATEMENT', '}'], # MAIN
+    15: ['ASIGN'], # STATEMENT
+    16: ['FOR STATEMENT'], # STATEMENT
+    17: ['WHILE STATEMENT'], # STATEMENT
+    18: ['IF STATEMENT'], # STATEMENT
+    19: ['COUNTER'], # STATEMENT
+    20: ['INPUT'], # STATEMENT
+    21: ['OUTPUT'], # STATEMENT
+    22: ['EXP', 'AUX2'], # EXPRESION
+    23: ['REL', 'EXP'], # AUX2
+    24: ['Empty'], # AUX2
+    25: ['TERM', 'AUX3'], # TERM
+    26: ['+', 'TERM'], # AUX3
+    27: ['-', 'TERM'], # AUX3
+    28: ['||', 'TERM'], # AUX3
+    29: ['Empty'], # AUX3
+    30: ['=='], # REL
+    31: ['<'], # REL
+    32: ['>'], # REL
+    33: ['<='], # REL
+    34: ['>='], # REL
+    35: ['!='], # REL
+    36: ['identifier', ':=', 'EXPRESION'], # ASIGN
+    37: ['FACTOR', 'AUX4'], # TERM
+    38: ['*', 'FACTOR'], # AUX4
+    39: ['/', 'FACTOR'], # AUX4
+    40: ['&&', 'FACTOR'], # AUX4
+    41: ['Empty'], # AUX4
+    42: ['{', 'EXPRESION', '}'], # FACTOR
+    43: ['identifier'], # FACTOR
+    44: ['true'], # FACTOR
+    45: ['false'], # FACTOR
+    46: ['string'], # FACTOR
+    47: ['decimal'], # FACTOR
+    48: ['STATEMENT', ';', 'AUX5'], # STATEMENTS
+    49: ['STATEMENTS'], #AUX5
+    50: ['Empty'], # AUX5
+    51: ['for', 'COUNTER', 'do', '{', 'STATEMENTS', '}'], # FOR STATEMENT
+    52: ['id', ':=', 'EXPRESION', 'for', 'EXPRESION'], # COUNTER
+    53: ['while', 'EXPRESION', 'do', '{', 'STATEMENTS', '}'], # WHILE STATEMENT
+    54: ['read', '(', 'AUX6'], # INPUT
+    55: ['identifier', 'AUX7'], # AUX6
+    56: [')'], # AUX7
+    57: [',', 'AUX6'], # AUX7
+    58: ['write', '(', 'AUX6'], # OUTPUT
+    59: ['if', 'EXPRESION', 'then', '{', 'STATEMENTS', '}', 'AUX8'], # IF STATEMENT
+    60: ['else', '{', 'STATEMENTS', '}', 'endif'], # AUX8
+    61: ['endif'], # AUX8
 }
 
-print('Ejecutando parser')
+def is_terminal(symbol):
+    return symbol not in tabla
 
-def clean_input(filename):
-    try:
-        with open(filename, 'r', encoding='utf-8-sig') as file:
-
-            input_str = file.read()
-            
-        input_str = input_str.lstrip('\ufeff\ufffe\xff\xfe')
-        
-        tokens = re.findall(r'¡init|end!|\b\w+\b|[:=]{1,2}|[;{}()]|==|<=|>=|!=|\+|-|\*|/|\|\||&&', input_str)
-        
-        tokens.append('$')
-        
-        return tokens
-    
-    except FileNotFoundError:
-        print(f" Error: Documento {filename} no encontrado.")
-        return None
-    except Exception as e:
-        print(f" Error al leer el archivo: {e}")
-        return None
-
-def syntactic_analyzer(tokens):
-    if not tokens:
-        return False
-    
+def parse(tokens):
     stack = ['$', 'PROGRAM']
     index = 0
-    
-    print("Input inicial:", tokens)
-    print("Stack inicial:", stack)
-    
-    while stack and index < len(tokens):
-        print(f"\n--- Iteracion ---")
-        print(f"Stack Top: {stack[-1]}")
-        print(f"Actual Token: {tokens[index]}")
-        print(f"Actual Stack: {stack}")
-        print(f"Index: {index}")
-        
-        top = stack[-1]
-        token = tokens[index]
-        
-        if top == token:
-            stack.pop()
-            index += 1
-            print(f"Match: Consumido {token}")
-            continue
-        
-        if top in tabla:
-            if token in tabla[top]:
+    current_token = tokens[index] if index < len(tokens) else None
+    step = 1
 
-                num_production = tabla[top][token]
-                production = producciones[num_production]
-                
-                print(f"Aplicando produccion {num_production}: {production}")
-                
-                stack.pop()
-                
-                if production != ['Empty']:
-                    stack.extend(reversed([s for s in production if s != 'Empty']))
-                
-                continue
-            
-            elif 'Empty' in producciones.get(num_production, []):
-                print(f"Encontrado empty para {top}")
-                stack.pop()
-                continue
-            
+    print(" ⏳⏳ Iniciando análisis sintáctico... ⏳⏳\n")
+    
+    while stack:
+        top = stack.pop()
+        print(f"\n🚶Paso {step}:")
+        print(f"💾  Pila:️ ➡️ {stack}⬅️ ♦️ [{top}]")
+        print(f"♦️  Token actual: {current_token}")
+
+        if top == '$':
+            if current_token is None:
+                print("\n 😉✅¡Análisis exitoso! La entrada es válida.")
+                return True
             else:
-                print(f" Syntax Error: token no esperado: {token}. Top: {top}.  Esperado: {list(tabla[top].keys())}")
+                print(f"\n 🤔Error: Hay tokens restantes sin procesar: {current_token}")
                 return False
-        
+
+        if is_terminal(top):
+            if top == current_token:
+                print(f"🔎 Coincidencia: Terminal '{top}' encontrado.")
+                index += 1
+                current_token = tokens[index] if index < len(tokens) else None
+            else:
+                print(f"\n ❌Error: Se esperaba'{top}' pero se encontró 🔎'{current_token}'")
+                return False
         else:
-            print(f"Syntax Error: no se esperaba el simbolo en stack: {top}. Token: {token}")
-            return False
-    
-    if index == len(tokens) and not stack:
-        print("😉✅Codigo ACEPTADO!")
-        return True
-    
-    print("😭❌ Codigo NO ACEPTADO")
-    print(f"Remaining stack: {stack}")
-    print(f"Remaining tokens: {tokens[index:]}")
+            if current_token not in tabla.get(top, {}):
+                print(f"\n ❌Error: No hay producción para {top} con el token 🔎'{current_token}'")
+                return False
+            
+            prod_num = tabla[top][current_token]
+            production = producciones[prod_num]
+            print(f"🔨 Aplicando producción 🔎 [{prod_num}]: {top} -> {' '.join(production)}")
+
+            for symbol in reversed(production):
+                if symbol != 'Empty':
+                    stack.append(symbol)
+        
+        step += 1
+
     return False
 
-def main():
-    filename = 'outputP.txt'
-    
-    tokens = clean_input(filename)
-    
-    if tokens:
-        syntactic_analyzer(tokens)
-
 if __name__ == "__main__":
-    main()
+    with open("outputP.txt", "r", encoding='utf-8') as file:
+        input_tokens = file.read().split()
+    print('\n 🔎Tokens detectados: ', input_tokens)
+    
+    success = parse(input_tokens)
+    if not success:
+        print("\n ❌😭La entrada no es válida.")

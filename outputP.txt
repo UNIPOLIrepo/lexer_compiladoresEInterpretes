@@ -3,14 +3,12 @@ identifier
 ;
 var
 identifier
+;
+identifier
 :
-integer
+bool
 ;
 {
-identifier
-:=
-decimal
-;
 identifier
 :=
 decimal

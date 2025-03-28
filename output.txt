@@ -3,14 +3,12 @@ $programita = identificador
 ; = delimitador: punto y coma
 var = saveword
 $algo = identificador
+; = delimitador: punto y coma
+$otro = identificador
 : = delimitador: dos puntos
-integer = saveword
+bool = saveword
 ; = delimitador: punto y coma
 { = delimitador: llave izq
-$otracosa = identificador
-:= = asignacion
-10.0 = decimal
-; = delimitador: punto y coma
 $otracosa = identificador
 := = asignacion
 10.0 = decimal

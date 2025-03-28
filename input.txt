@@ -1,7 +1,6 @@
 ¡init $programita ;
-var $algo : integer ;
+var $algo ; $otro : bool ;
 {
-    $otracosa := 10.0;
     $otracosa := 10.0
 }
 end!
