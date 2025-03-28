@@ -1,56 +1,7 @@
-$nombre
-10
-1.5
-'esto es un string'
-/*esto es un comentrio*/
-/*esto es
-    una tabulacion
-        con salto de linea */
-:=
->
-<
->=
-<=
-!=
-==
-+
--
-*
-/
-||
-&&
-!
+¡init $programita ;
+var $algo : integer ;
 {
+    $otracosa := 10.0;
+    $otracosa := 10.0
 }
-[
-]
-(
-)
-;
-:
-.
-hola
-¡init
 end!
-array
-bool
-char
-decimal
-do
-else
-endif
-false
-for
-if
-integer
-of
-program
-read
-repeat
-string
-then
-true
-until
-var
-while
-write

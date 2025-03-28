@@ -1,4 +1,7 @@
 def lexer(input_str):
+    # Remove any potential byte order mark or unexpected leading characters
+    input_str = input_str.lstrip('\ufeff\ufffe\xff\xfe')
+
     # * AUTOMATA
     transiciones = {
         'q0': [
@@ -23,6 +26,7 @@ def lexer(input_str):
             (lambda c: c == '(', 'q33'),
             (lambda c: c == ')', 'q34'),
             (lambda c: c == ';', 'q35'),
+            (lambda c: c == ',', 'q36'),
         ],
         'q1': [(lambda c: c.isalnum(), 'q2')],
         'q2': [(lambda c: c.isalnum(), 'q2')],
@@ -54,14 +58,14 @@ def lexer(input_str):
 
     # Estados de aceptación (clave: estado, valor: código de token)
     estados_aceptacion = {
-        'q2': 100,  # identificador
-        'q3': 150,  # entero
-        'q5': 200,  # decimal
-        'q7': 250,  # string
+        'q2': 100,  # identificador ($hola123)
+        'q3': 150,  # entero (123)
+        'q5': 200,  # decimal (123.123)
+        'q7': 250,  # string ('hola')
         'q8': 451,  # aritmético (/)
-        'q11': 300,  # comentario
+        'q11': 300,  # comentario /*esto es un comentario */
         'q12': 557,  # delimitador (:)
-        'q13': 350,  # asignacion
+        'q13': 350,  # asignacion (:=)
         'q14': 401,  # relacional (<)
         'q15': 403,  # relacional (<=)
         'q16': 402,  # relacional (>)
@@ -81,9 +85,9 @@ def lexer(input_str):
         'q33': 555,  # delimitador (()
         'q34': 556,  # delimitador ())
         'q35': 558,  # delimitador (;)
+        'q36': 559,  # delimitador (,)
     }
 
-    # Significado de cada código de token
     codigos = {
         100: 'identificador',
         150: 'entero',
@@ -112,6 +116,38 @@ def lexer(input_str):
         556: 'delimitador: parentesis der',
         557: 'delimitador: dos puntos',
         558: 'delimitador: punto y coma',
+        559: 'delimitador: coma',
+        600: 'saveword'
+    }
+    codigos_para_sintaxis = {
+        100: 'identifier',
+        150: 'integer',
+        200: 'decimal',
+        250: 'string',
+        300: 'comentario',
+        350: ':=',
+        401: '<',
+        402: '>',
+        403: '<=',
+        404: '>=',
+        405: '!=',
+        406: '==',
+        451: '/',
+        452: '*',
+        453: '+',
+        454: '-',
+        501: '!=',
+        502: '||',
+        503: '&&',
+        551: '{',
+        552: '}',
+        553: '[',
+        554: ']',
+        555: '(',
+        556: ')',
+        557: ':',
+        558: ';',
+        559: ',',
         600: 'saveword'
     }
 
@@ -122,43 +158,35 @@ def lexer(input_str):
         "repeat", "string", "then", "true", "until", "var", "while", "write"
     ]
 
-    reserved_words.sort(key=len, reverse=True) # no quise ordenarlas a mano jaja
+    reserved_words.sort(key=len, reverse=True)
 
     index = 0
     resultados = []
+    sintaxis_output = []  # Para outputP.txt
     longitud = len(input_str)
 
     while index < longitud:
-        # Ignorar espacios, tabuladores y saltos de linea T400
-        if input_str[index] in {' ', '\t', '\n'}:
+        # Ignorar espacios, tabuladores y saltos de linea
+        if input_str[index] in {' ', '\t', '\n', '\r'}:
             index += 1
             continue
 
         #! Bloque para las palabras reservadas
-        if input_str[index].isalpha() or input_str[index] == '¡':
-            encontrado = None
-            for word in reserved_words:
-                if input_str.startswith(word, index):
-                    end_index = index + len(word)
-                    if end_index < longitud and input_str[end_index].isalnum():
-                        continue
+        encontrado = None
+        for word in reserved_words:
+            if input_str.startswith(word, index):
+                end_index = index + len(word)
+                if (end_index >= longitud or not input_str[end_index].isalnum()):
                     encontrado = word
                     break
-            if encontrado is not None:
-                resultados.append(f"{encontrado} = {codigos[600]}")
-                index += len(encontrado)
-                continue
-            else:
-                # Si comienza con letra y no coincide con ninguna palabra reservada,
-                # se puede considerar error (o bien implementar otra regla, por ejemplo para identificadores sin '$').
-                inicio = index
-                while index < longitud and input_str[index] not in {' ', '\t', '\n'}:
-                    index += 1
-                token = input_str[inicio:index]
-                resultados.append(f"{token} = token no reconocido")
-                continue
 
-        #! Resto del automata
+        if encontrado is not None:
+            resultados.append(f"{encontrado} = {codigos[600]}")
+            sintaxis_output.append(encontrado)  # Guardamos la palabra reservada directamente
+            index += len(encontrado)
+            continue
+
+        # Resto del automata
         estado_actual = 'q0'
         inicio = index
         estado_aceptacion = None
@@ -190,24 +218,31 @@ def lexer(input_str):
             token = input_str[inicio:pos_aceptado + 1]
             codigo = estados_aceptacion[estado_aceptacion]
             resultados.append(f"{token} = {codigos[codigo]}")
+            sintaxis_output.append(codigos_para_sintaxis[codigo])
             index = pos_aceptado + 1
         else:
             # Si no hubo transición alguna
             if index == inicio:
-                resultados.append(f"{input_str[inicio]} = token no existe")
+                if input_str[inicio] not in {' ', '\t', '\n', '\r'}:
+                    resultados.append(f"{input_str[inicio]} = token no existe")
+                    sintaxis_output.append("token_no_existe")
                 index += 1
             else:
                 token = input_str[inicio:index]
                 resultados.append(f"{token} = token no reconocido")
+                sintaxis_output.append("token_no_reconocido")
+
+    # Escribir los archivos de salida
+    with open('./output.txt', 'w', encoding='utf-8') as file:
+        file.write('\n'.join(resultados))
+        
+    with open('./outputP.txt', 'w', encoding='utf-8') as file:
+        file.write('\n'.join(sintaxis_output))
 
     return resultados
 
 # Lectura del archivo de entrada
-with open('codigo.txt', 'r') as file:
+with open('input.txt', 'r', encoding='utf-8') as file:
     entrada = file.read()
 
 resultados = lexer(entrada)
-
-# Escribir la salida en output.txt
-with open('./output.txt', 'w') as file:
-    file.write('\n'.join(resultados))

@@ -1,60 +1,18 @@
-$nombre = identificador
-10 = entero
-1.5 = decimal
-'esto es un string' = string
-/*esto es un comentrio*/ = comentario
-/*esto es
-    una tabulacion
-        con salto de linea */ = comentario
-:= = asignacion
-> = relacional: mayor que
-< = relacional: menor que
->= = relacional: mayor que o igual a
-<= = relacional: menor que o igual a
-!= = relacional: distinto a
-== = relacional: igual a
-+ = aritmetico: suma
-- = aritmetico: resta
-* = aritmetico: multiplicacion
-/ = aritmetico: division
-|| = logico: or
-&& = logico: and
-! = logico: negacion
-{ = delimitador: llave izq
-} = delimitador: llave der
-[ = delimitador: corchete izq
-] = delimitador: corchete der
-( = delimitador: parentesis izq
-) = delimitador: parentesis der
+Â¡init = saveword
+$programita = identificador
 ; = delimitador: punto y coma
-: = delimitador: dos puntos
-. = token no existe
-h = token no existe
-o = token no existe
-l = token no existe
-a = token no existe
-Â = token no existe
-¡init = saveword
-end! = saveword
-array = saveword
-bool = saveword
-char = saveword
-decimal = saveword
-do = saveword
-else = saveword
-endif = saveword
-false = saveword
-for = saveword
-if = saveword
-integer = saveword
-of = saveword
-program = saveword
-read = saveword
-repeat = saveword
-string = saveword
-then = saveword
-true = saveword
-until = saveword
 var = saveword
-while = saveword
-write = saveword
+$algo = identificador
+: = delimitador: dos puntos
+integer = saveword
+; = delimitador: punto y coma
+{ = delimitador: llave izq
+$otracosa = identificador
+:= = asignacion
+10.0 = decimal
+; = delimitador: punto y coma
+$otracosa = identificador
+:= = asignacion
+10.0 = decimal
+} = delimitador: llave der
+end! = saveword
