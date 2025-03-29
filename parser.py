@@ -108,8 +108,8 @@ def parse(tokens):
     while stack:
         top = stack.pop()
         print(f"\n🚶Paso {step}:")
-        print(f"💾  Pila:️ ➡️ {stack}⬅️ ♦️ [{top}]")
-        print(f"♦️  Token actual: {current_token}")
+        print(f"💾  Pila:️ ➡️ {stack}⬅️ 🟢 [{top}] 🟢")
+        print(f"🔴  Token actual: {current_token}")
 
         if top == '$':
             if current_token is None:
@@ -134,7 +134,7 @@ def parse(tokens):
             
             prod_num = tabla[top][current_token]
             production = producciones[prod_num]
-            print(f"🔨 Aplicando producción 🔎 [{prod_num}]: {top} -> {' '.join(production)}")
+            print(f"☢️  Aplicando producción 🔎 [{prod_num}]: {top} 🟰  {' '.join(production)}")
 
             for symbol in reversed(production):
                 if symbol != 'Empty':
